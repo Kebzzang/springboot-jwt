@@ -2,6 +2,7 @@ package com.keb.jwt.config;
 
 import com.keb.jwt.config.jwt.JwtAuthenticationFilter;
 import com.keb.jwt.config.jwt.JwtAuthorizationFilter;
+import com.keb.jwt.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +21,7 @@ import org.springframework.web.filter.CorsFilter;
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final CorsFilter corsFilter;
-
+    private final UserRepository userRepository;
     @Bean
     public BCryptPasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
@@ -35,9 +36,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .formLogin().disable() //폼 태그로 로그인하는 것 안쓰겠다!
         .httpBasic().disable() //기본적인 http 로그인 방식 안쓰겠다  배리어 방식 쓰겠다.
         .addFilter(new JwtAuthenticationFilter(authenticationManager())) //AuthenticationManager를 던져줘야 함
-        .addFilter(new JwtAuthorizationFilter(authenticationManager()))
+        .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository))
         .authorizeRequests()
-        .antMatchers("/api/v1/user/**")
+        .antMatchers("/api/v1/user")
         .access("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
         .antMatchers("/api/v1/manager/**")
         .access("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")

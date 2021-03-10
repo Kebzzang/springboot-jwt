@@ -78,14 +78,14 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         //HS256방식 (RSA 방식이 아님)
         String jwtToken= JWT.create()
-                .withSubject("keb토큰")
-                .withExpiresAt(new Date(System.currentTimeMillis()+(60000*10))) //토큰 유효시간 정하기 -> 만료되면 다시 만들어주면 됨 여기선 10분!
+                .withSubject(principalDetails.getUsername())
+                .withExpiresAt(new Date(System.currentTimeMillis()+JwtProperties.EXPIRATION_TIME)) //토큰 유효시간 정하기 -> 만료되면 다시 만들어주면 됨 여기선 10분!
                 .withClaim("id", principalDetails.getUser().getId()) //비공개 클레임 내가 넣고 싶은 키밸류값 넣으면 됨
                 .withClaim("username", principalDetails.getUser().getUsername())
-                .sign(Algorithm.HMAC256("kebzzang")); //서버만 알고 있는 시크릿 키!
+                .sign(Algorithm.HMAC256(JwtProperties.SECRET)); //서버만 알고 있는 시크릿 키!
 
 //        super.successfulAuthentication(request, response, chain, authResult);
-        response.addHeader("Authorization", "Bearer "+jwtToken); //헤더에 담겨 사용자에게 응답됨
+        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX+jwtToken); //헤더에 담겨 사용자에게 응답됨
     }
     //1. 유저네임 패스워드 받아서
     //2. 정상인지 로그인 시도 함  authenticationManager로 로그인 시도하면 PrincipalDetailsService가 호출됨

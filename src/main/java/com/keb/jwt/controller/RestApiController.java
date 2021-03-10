@@ -32,4 +32,16 @@ public class RestApiController {
         userRepository.save(user);
         return "회원가입완료!";
     }
+    @GetMapping("/api/v1/user") //->매니저, 어드민
+    public String user(){
+        return "user";
+    }
+    @GetMapping("/api/v1/manager") //->매니저
+    public String manager(){
+        return "manager";
+    }
+    @GetMapping("/api/v1/admin") //->어드민
+    public String admin(){
+        return "admimn";
+    }
 }
