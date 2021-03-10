@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 
 @RequiredArgsConstructor
 @RestController
@@ -40,8 +42,8 @@ public class RestApiController {
     public String manager(){
         return "manager";
     }
-    @GetMapping("/api/v1/admin") //->어드민
-    public String admin(){
-        return "admimn";
+    @GetMapping("/api/v1/admin/alltheusers") //->어드민
+    public List<User> users(){
+        return userRepository.findAll();
     }
 }
